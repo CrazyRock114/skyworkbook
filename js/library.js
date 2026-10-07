@@ -4,6 +4,8 @@ window.Library = (function(){
   let state = { part:"autumn", lesson:"all", q:"" };
 
   function norm(s){ return String(s||"").toLowerCase(); }
+  // 英式/美式拼写容错：haemoglobin/oestrogen/foetus 等 ae ↔ e（IGCSE 两式皆可）
+  function loose(s){ return norm(s).replace(/ae/g, "e").replace(/æ/g, "e"); }
 
   function filtered(){
     return items.filter(i =>
@@ -11,7 +13,7 @@ window.Library = (function(){
       (state.lesson === "all" || String(i.lesson) === state.lesson) &&
       (!state.q || [i.question_en, i.question_zh, i.answer_en, i.answer_zh,
                     i.title_en, i.title_zh, i.task,
-                    (i.source||[]).join(" ")].some(t => norm(t).includes(state.q))));
+                    (i.source||[]).join(" ")].some(t => loose(t).includes(loose(state.q)))));
   }
 
   function lessonLabel(no){

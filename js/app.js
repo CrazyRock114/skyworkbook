@@ -68,7 +68,7 @@ window.App = (function(){
   function badgesWon(){ return BADGES.filter(b=>b.test(S)); }
 
   /* ---------- router ---------- */
-  const routes = { home:renderHome, study:()=>Study.render($("#app")), quiz:()=>Quiz.render($("#app")), games:()=>Games.render($("#app")), review:renderReview };
+  const routes = { home:renderHome, study:()=>Study.render($("#app")), quiz:()=>Quiz.render($("#app")), games:()=>Games.render($("#app")), library:()=>Library.render($("#app")), review:renderReview };
   function nav(){
     const h = (location.hash||"#home").slice(1).split("?")[0];
     const r = routes[h] ? h : "home";
@@ -125,6 +125,11 @@ window.App = (function(){
             <div class="ico">${b.ico}</div><div class="nm">${b.nm}</div>
             <div class="small muted">${b.test(S)?"已达成":b.hint}</div></div>`).join("")}
         </div>
+        <div class="card mt">
+          <div class="spread"><b>📖 答案总库</b><span class="pill">新</span></div>
+          <p class="small muted" style="margin:6px 0 10px">做作业卡住了？按课程浏览全部题目、双语答案与教材出处，支持按 Task 号 / 关键词 / 页码全文搜索。</p>
+          <button class="btn" onclick="location.hash='#library'">打开答案总库 →</button>
+        </div>
         <h2 class="sect mt">🎮 速玩入口</h2>
         <div class="grid g3">
           <div class="game-tile" onclick="Games.open('memory')"><div class="ico">🃏</div><div class="nm">记忆翻牌</div><div class="ds">术语配对挑战</div></div>
@@ -160,7 +165,7 @@ window.App = (function(){
         <button class="btn sm ghost" id="clearWrong">清空错题本</button></div>
         <p class="small muted">判断/填空/看图题的错题可在对应游戏或练习中重做，答对即自动移出错题本。</p>
       <div class="card mt8"><ul class="wl">${entries.map(e=>{
-        return `<li><span class="kp">${esc((lessonByKey[e.part+"-"+e.lesson]||{}).zh || e.title_zh || "")}</span>
+        return `<li><span class="kp">${esc((lessonByKey[e.part+"-"+e.lesson]||{}).zh || e.title_zh || "")}</span>${e.task?` <span class="kp" style="margin-left:4px">${esc(e.task)}</span>`:""}
           <b>${esc(e.title_zh||e.title_en||e.task||"")}</b><br>${esc(e.question_en||"")}
           <br><span class="muted small">✔ ${esc((e.answer_zh||e.answer_en||"").slice(0,140))}</span>
           <br><span class="src">出处：${esc((e.source||[]).join("；"))}</span></li>`;

@@ -61,6 +61,7 @@ window.Study = (function(){
         <div class="fc" id="fc">
           <div class="fc-face fc-front">
             <span class="fc-tag pill">${esc(it.task||it.type)}</span>
+            <span class="fc-tag pill" style="top:40px">${esc(it.title_zh||it.title_en||"")}</span>
             <div class="q">${esc(it.question_en||it.title_en||"")}</div>
             <div class="qzh" style="margin-top:8px">${esc(it.question_zh||it.title_zh||"")}</div>
             <div class="tap-hint">👆 点击卡片翻面看答案</div>

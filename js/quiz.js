@@ -103,7 +103,8 @@ window.Quiz = (function(){
       const i = q.i;
       const lesson = App.lessonByKey[i.part+"-"+i.lesson];
       box.appendChild(el(`<div>
-        <div class="kp">${esc(lesson?lesson.zh:"")} · ${esc(i.title_zh||i.title_en||i.task||"")}</div>
+        <div class="kp">${esc(lesson?lesson.zh:"")}</div>
+        <span class="kp" style="margin-left:4px">${esc(i.task||"")}</span> · ${esc(i.title_zh||i.title_en||"")}
         <div class="qtext mt8">${esc(i.question_en||"")}</div>
         <div class="qzh">${esc(i.question_zh||"")}</div>
         <div id="opts"></div><div id="fbArea"></div>

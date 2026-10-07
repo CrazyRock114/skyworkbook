@@ -260,6 +260,24 @@ checkEach("P", "看图题选项不重复", CUR.DIAGRAM_QUIZ, q =>
   check("S", "疫苗-3 TF 判定 id 命名空间统一", q.includes('"TF:"+') && g.includes('"TF:"+') && !g.includes('"TFB:"+'), "");
 })();
 
+
+// 20. 疫苗-4: 答案总库必须注册为路由且引用存在
+(function(){
+  const html = readFile(BASE + "index.html");
+  const app = readFile(BASE + "js/app.js");
+  const libExists = fileExists(BASE + "js/library.js");
+  check("S", "疫苗-4a 总库脚本已引入 index.html", html.includes("js/library.js"), "");
+  check("S", "疫苗-4b library 路由已注册", app.includes("library:()=>Library.render"), "");
+  check("S", "疫苗-4c library.js 从 App 解构 items 数据源", libExists && readFile(BASE + "js/library.js").includes("{ el, esc, items, lessons } = App"), "");
+})();
+// 21. 总库数据完备性：全部条目的 task/question/answer 可渲染（无 undefined 泄漏）
+(function(){
+  const libSrc = readFile(BASE + "js/library.js");
+  // 模拟库的展示字段选择逻辑做静态检查：每条目至少 question_en 或 question_zh 非空
+  const bads = items.filter(i => !((i.question_en||"").trim() || (i.question_zh||"").trim())).map(i=>i.id);
+  check("S", "总库渲染前提：每条目至少一个语言的题干非空", bads.length === 0, bads.slice(0,5).join(","));
+})();
+
 // ================= 汇总 =================
 let report = "";
 report += "=== 断言统计 === 存在性E:" + statExist + " 状态S:" + statState + " 性质P:" + statProperty + " 端到端E2E:" + statE2E;

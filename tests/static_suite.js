@@ -30,7 +30,7 @@ const SPEC_PER_LESSON = {
 const REQUIRED_KEYS = ["id","part","lesson","lesson_title_en","lesson_title_zh","task","type",
   "question_en","question_zh","answer_en","answer_zh","source","status"];
 const KNOWN_TYPES = ["mcq","fill","match","table","short","open","tf","sort","diagram","data","drawing"];
-const KNOWN_STATUS = ["verified","corrected","added","enrichment","sample_data"];
+const KNOWN_STATUS = ["verified","corrected","added","enrichment","sample_data","ambiguous"];
 const KNOWN_KEYS = new Set([...REQUIRED_KEYS, "options", "correct", "notes", "_part", "title_en", "title_zh"]);
 
 let pass = 0, fail = 0; const failures = [];

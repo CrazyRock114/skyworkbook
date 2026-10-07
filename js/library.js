@@ -81,7 +81,7 @@ ${esc(i.answer_en || "")}
 
 ${esc(i.answer_zh || "")}</div>
             <div class="lib-tags">${(i.status||[]).map(s=>{
-              const map = { verified:["✅ 核验通过","ok"], corrected:["✏️ 已修正","bad"], added:["➕ 已补全","gold"], enrichment:["📘 教材外补充",""], sample_data:["🧪 示例数据",""] };
+              const map = { verified:["✅ Verified 教材有依据","ok"], corrected:["✏️ v2已更正","bad"], added:["➕ 已补全","gold"], enrichment:["📘 教师拓展·非判分",""], sample_data:["🧪 学生实测·无固定答案",""], ambiguous:["⚠️ 题目/教材待明确","bad"] };
               const m = map[s] || [s, ""];
               return `<span class="pill ${m[1]}">${m[0]}</span>`;
             }).join("")}

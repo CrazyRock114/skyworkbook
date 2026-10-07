@@ -68,7 +68,7 @@ CURATED.SEQUENCES = [
   { id: "rbckidney", name: "红细胞到肾之旅 RBC to Kidneys", source: "教材 p.189（PDF 191）L18-Q6", items: [
     "Left ventricle 左心室", "Aorta 主动脉", "Renal artery 肾动脉", "Kidneys 肾脏", "Renal vein 肾静脉", "Vena cava 腔静脉", "Right atrium 右心房" ]},
   { id: "cycle28", name: "月经周期六事件 Menstrual Cycle", source: "P2 p.128（PDF 130）", items: [
-    "Menstruation 月经（内膜脱落）", "Follicle matures 卵泡成熟", "Ovulation 排卵", "Uterus lining thickens 内膜增厚",
+    "Menstruation 月经（内膜脱落）", "Follicle matures 卵泡成熟", "Uterus lining thickens 内膜增厚", "Ovulation 排卵（约 day 14）",
     "Lining maintained 内膜维持", "Progesterone drops, cycle restarts 孕酮下降·周期重启" ]},
   { id: "heartbeat", name: "一次心跳的过程 Heartbeat", source: "教材 p.129-130（PDF 131-132）", items: [
     "Heart relaxed, blood fills atria 心脏舒张·血液充盈心房", "Atria contract 心房收缩", "AV valves close - \"lub\" 房室瓣关闭（lub）",
@@ -122,7 +122,7 @@ CURATED.CLOZE = [
   { q: "The menstrual cycle lasts about ___ days on average. 月经周期平均约___天。", a: ["28"], unit: "days", src: "P2 p.121（PDF 123）" },
   { q: "In a 28-day cycle, ovulation happens around day ___. 28天周期的排卵约在第___天。", a: ["14"], unit: "", src: "P2 p.122、Table 32.1" },
   { q: "Progesterone peaks around day ___ (28-day cycle). 孕酮约在第___天达峰。", a: ["21"], unit: "", src: "P2 p.127（PDF 129）Table 32.1" },
-  { q: "A 35-day cycle: ovulation would likely occur around day ___. 35天周期排卵约在第___天。", a: ["21"], unit: "", src: "P2 p.129（PDF 131）Task 32.9" },
+  { q: "A 35-day cycle: ovulation would likely occur around day ___ (35 ÷ 2, per the glossary rule 'roughly midway'). 35天周期按词汇表\u201c约中点\u201d规则，排卵约在第___天。", a: ["17","18","17-18","17~18"], unit: "", src: "P2 p.129（PDF 131）Task 32.9（按词汇表 midway 规则；注意标准生理学为黄体期14天口径，教材未教）" },
   { q: "Normal blood glucose baseline is about ___ mg/dL. 血糖正常基线约___mg/dL。", a: ["90"], unit: "mg/dL", src: "P2 p.93（PDF 95）" },
   { q: "Teenagers need about ___ hours of sleep per night (adults need 7-8). 青少年每晚约需___小时睡眠。", a: ["9","10","9-10","9~10"], unit: "h", src: "P2 p.115（PDF 117）趣味事实" }
 ];

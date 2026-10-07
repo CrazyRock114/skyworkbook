@@ -103,8 +103,8 @@ window.Quiz = (function(){
       const i = q.i;
       const lesson = App.lessonByKey[i.part+"-"+i.lesson];
       box.appendChild(el(`<div>
-        <div class="kp">${esc(lesson?lesson.zh:"")}</div>
-        <span class="kp" style="margin-left:4px">${esc(i.task||"")}</span> · ${esc(i.title_zh||i.title_en||"")}
+        <div class="kp">${App.S.lang==="en" ? esc(lesson?lesson.en:"") : esc(lesson?lesson.zh:"")}</div>
+        <span class="kp" style="margin-left:4px">${esc(i.task||"")}</span> · ${esc((App.S.lang==="en" ? i.title_en : i.title_zh) || i.title_en || "")}
         <div class="qtext mt8">${esc(i.question_en||"")}</div>
         <div class="qzh">${esc(i.question_zh||"")}</div>
         <div id="opts"></div><div id="fbArea"></div>
@@ -120,10 +120,30 @@ window.Quiz = (function(){
             if(letters[jx]===i.correct) bb.classList.add("correct");
             else if(letters[jx]===letters[ix] && !ok) bb.classList.add("wrong");
           });
-          feedback(box, ok, i.answer_en, i.answer_zh, (i.source||[]).join("；"));
           recordAnswer(i.id, ok);
           if(ok) session.score++;
-          setTimeout(done, ok?1100:2300);
+          const fbArea = box.querySelector("#fbArea");
+          if(ok){
+            fbArea.appendChild(el(`<div class="fb ok"><b>✅ 答对了！</b>
+              <div>${esc(i.answer_en||"")}</div>
+              <div class="qzh muted">${esc(i.answer_zh||"")}</div>
+              <div class="src">📖 ${esc((i.source||[]).join("；"))}</div></div>`));
+          } else {
+            const ci = "ABCDEFG".indexOf(i.correct);
+            const why = i.option_notes && i.option_notes[ix];
+            const whyLine = why ? (App.S.lang==="en" ? why.en : (why.zh ? why.zh + "｜" + why.en : why.en)) : "";
+            const kpTxt = (lesson ? (App.S.lang==="en" ? lesson.en : lesson.zh) : "") + " · " + ((App.S.lang==="en" ? i.title_en : i.title_zh) || i.task || "");
+            fbArea.appendChild(el(`<div class="fb bad">
+              <b>❌ 答错了 · 你选 ${letters[ix]}. ${esc(i.options[ix])}</b>
+              ${whyLine ? `<div class="why-line">↳ ${esc(whyLine)}</div>` : ""}
+              <div style="margin-top:6px;">✔ 正确答案：<b>${i.correct}. ${esc(i.options[ci])}</b></div>
+              <div style="margin-top:4px;">${esc(i.answer_en||"")}</div>
+              <div class="qzh muted" style="margin-top:2px;">${esc(i.answer_zh||"")}</div>
+              <div class="kp-line"><span class="kp">🎯 考点：${esc(kpTxt)}</span></div>
+              <div class="src">📖 ${esc((i.source||[]).join("；"))}</div>
+            </div>`));
+          }
+          setTimeout(done, ok?1100:2600);
         };
         optsDiv.appendChild(b);
       });

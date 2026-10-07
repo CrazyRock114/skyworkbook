@@ -44,8 +44,9 @@ window.Games = (function(){
     window.stopT = stopTimer;
     const grid = root.querySelector("#grid");
     cards.forEach((c,ix)=>{
+      const faceTxt = App.S.lang === "en" ? App.enOnly(c.txt) : c.txt;
       const d = el(`<div class="mem-card" data-ix="${ix}"><div class="mem-inner">
-        <div class="mem-face mem-front">🧬</div><div class="mem-face mem-back">${esc(c.txt)}</div></div></div>`);
+        <div class="mem-face mem-front">🧬</div><div class="mem-face mem-back">${esc(faceTxt)}</div></div></div>`);
       grid.appendChild(d);
       d.onclick = ()=>{
         if(opened.length >= 2) return; // 疫苗-2: 已翻开两张时忽略第三张，防状态卡死
@@ -94,10 +95,11 @@ window.Games = (function(){
       if(qi>=pool.length) pool.push(...shuffle(mcqPool));
       q = pool[qi++];
       const letters="ABCDEFG";
-      qbox.innerHTML = `<div class="kp">${esc((App.lessonByKey[q.part+"-"+q.lesson]||{}).zh||"")}</div>
+      const lesTxt = (App.S.lang==="en" ? (App.lessonByKey[q.part+"-"+q.lesson]||{}).en : (App.lessonByKey[q.part+"-"+q.lesson]||{}).zh) || "";
+      qbox.innerHTML = `<div class="kp">${esc(lesTxt)}</div>
         <div class="qtext mt8">${esc(q.question_en||"")}</div>
         <div class="qzh">${esc(q.question_zh||"")}</div>
-        <div id="opts"></div>`;
+        <div id="opts"></div><div id="btcfb"></div>`;
       const od = qbox.querySelector("#opts");
       q.options.forEach((o,ix)=>{
         const b = el(`<button class="opt"><b>${letters[ix]}.</b> ${esc(o)}</button>`);
@@ -112,7 +114,16 @@ window.Games = (function(){
           recordAnswer(q.id, ok);
           if(ok){ streak++; score += 1 + (streak>=3?1:0);
             if(streak>(S.best.btcStreak||0)){ S.best.btcStreak=streak; }
-          } else { streak=0; left=Math.max(0,left-2); }
+          } else {
+            streak=0; left=Math.max(0,left-2);
+            const ci = "ABCDEFG".indexOf(q.correct);
+            const why = q.option_notes && q.option_notes[ix];
+            const whyTxt = why ? (App.S.lang==="en" ? why.en : (why.zh ? why.zh + "｜" + why.en : why.en)) : "";
+            const fb = document.createElement("div");
+            fb.className = "fb bad";
+            fb.innerHTML = `✔ 正确答案：<b>${q.correct}. ${esc(q.options[ci])}</b>` + (whyTxt ? `<div class="why-line">↳ ${esc(whyTxt)}</div>` : "");
+            od.appendChild(fb);
+          }
           root.querySelector("#score").textContent=score;
           root.querySelector("#streak").textContent = streak>=3? `🔥 ${streak} 连对！`:"";
           setTimeout(nextQ, ok?350:900);
@@ -160,8 +171,9 @@ window.Games = (function(){
         return;
       }
       const {t,ix} = picks[idx];
+      const stmt = App.S.lang === "en" ? App.enOnly(t.s) : t.s;
       box.innerHTML = `<div class="kp">第 ${idx+1} / 12 条</div>
-        <div class="qtext mt8">${esc(t.s)}</div>
+        <div class="qtext mt8">${esc(stmt)}</div>
         <div class="row mt8"><button class="btn ok" id="bt">✔ True 对</button>
         <button class="btn bad" id="bf">✘ False 错</button></div><div id="fb"></div>`;
       const answer = v=>{
@@ -204,12 +216,12 @@ window.Games = (function(){
     function paint(){
       poolEl.innerHTML=""; ansEl.innerHTML="";
       pool.filter(x=>!placed.includes(x)).forEach(x=>{
-        const c = el(`<div class="chip">${esc(x.t)}</div>`);
+        const c = el(`<div class="chip">${esc(App.S.lang === "en" ? App.enOnly(x.t) : x.t)}</div>`);
         c.onclick = ()=>{ placed.push(x); paint(); };
         poolEl.appendChild(c);
       });
       placed.forEach((x,i)=>{
-        const c = el(`<div class="chip placed"><span class="seq-num">${i+1}</span>${esc(x.t)}</div>`);
+        const c = el(`<div class="chip placed"><span class="seq-num">${i+1}</span>${esc(App.S.lang === "en" ? App.enOnly(x.t) : x.t)}</div>`);
         c.onclick = ()=>{ placed = placed.filter(y=>y!==x); paint(); };
         ansEl.appendChild(c);
       });
@@ -263,7 +275,8 @@ window.Games = (function(){
       <div id="opts"></div><div id="fbArea"></div></div></div>`));
     const od = root.querySelector("#opts");
     q.opts.forEach((o,ix)=>{
-      const b = el(`<button class="opt"><b>${letters[ix]}.</b> ${esc(o)}</button>`);
+      const oTxt = App.S.lang === "en" ? App.enOnly(o) : o;
+      const b = el(`<button class="opt"><b>${letters[ix]}.</b> ${esc(oTxt)}</button>`);
       b.onclick = ()=>{
         const ok = ix===q.correct;
         od.querySelectorAll(".opt").forEach((bb,jx)=>{

@@ -68,11 +68,7 @@ window.Study = (function(){
           </div>
           <div class="fc-face fc-back">
             <span class="fc-tag pill ok">答案 Answer</span>
-            <div class="ans">${esc(it.answer_en||"")}
-
-——
-
-${esc(it.answer_zh||"")}</div>
+            <div class="ans">${App.S.lang==="en" ? esc(it.answer_en||"") : (esc(it.answer_en||"") + '<br><br>——<br><br>' + esc(it.answer_zh||""))}</div>
             <div class="src" style="margin-top:10px">📖 出处：${esc((it.source||[]).join("；"))}</div>
           </div>
         </div>

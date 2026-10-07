@@ -73,13 +73,9 @@ window.Library = (function(){
           </div>
           <div class="lib-body">
             <div class="lib-q"><b>题：</b>${esc(i.question_en || "")}</div>
-            <div class="lib-q muted">${esc(i.question_zh || "")}</div>
+            <div class="lib-q muted qzh">${esc(i.question_zh || "")}</div>
             <div class="lib-ans"><b>答案 Answer</b>
-${esc(i.answer_en || "")}
-
-——
-
-${esc(i.answer_zh || "")}</div>
+${App.S.lang==="en" ? esc(i.answer_en || "") : (esc(i.answer_en || "") + '<br><br>——<br><br>' + esc(i.answer_zh || ""))}</div>
             <div class="lib-tags">${(i.status||[]).map(s=>{
               const map = { verified:["✅ Verified 教材有依据","ok"], corrected:["✏️ v2已更正","bad"], added:["➕ 已补全","gold"], enrichment:["📘 教师拓展·非判分",""], sample_data:["🧪 学生实测·无固定答案",""], ambiguous:["⚠️ 题目/教材待明确","bad"] };
               const m = map[s] || [s, ""];

@@ -5,7 +5,7 @@ window.App = (function(){
   const esc = s => String(s===undefined||s===null?"":s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
   const LS_KEY = "g8sci_v1";
-  const defaultState = { xp:0, seen:{}, mastered:{}, wrong:{}, correctCount:0, answered:0, gamesPlayed:{}, best:{}, tfSeen:{} };
+  const defaultState = { xp:0, seen:{}, mastered:{}, wrong:{}, correctCount:0, answered:0, gamesPlayed:{}, best:{}, tfSeen:{}, lang:'bi' };
   let S = load();
   function load(){ try{ return Object.assign({}, defaultState, JSON.parse(localStorage.getItem(LS_KEY)||"{}")); }catch(e){ return {...defaultState}; } }
   function save(){ localStorage.setItem(LS_KEY, JSON.stringify(S)); paintXp(); }
@@ -79,7 +79,11 @@ window.App = (function(){
   }
   function boot(){
     document.querySelectorAll("#tabs a").forEach(a=>a.addEventListener("click",()=>{ setTimeout(nav,0); }));
+    document.querySelectorAll("#langSwitch button").forEach(b=>{
+      b.addEventListener("click", ()=> setLang(b.dataset.lang));
+    });
     window.addEventListener("hashchange", nav);
+    applyLangUI();
     paintXp(); nav();
   }
   function paintXp(){
@@ -167,7 +171,7 @@ window.App = (function(){
       <div class="card mt8"><ul class="wl">${entries.map(e=>{
         return `<li><span class="kp">${esc((lessonByKey[e.part+"-"+e.lesson]||{}).zh || e.title_zh || "")}</span>${e.task?` <span class="kp" style="margin-left:4px">${esc(e.task)}</span>`:""}
           <b>${esc(e.title_zh||e.title_en||e.task||"")}</b><br>${esc(e.question_en||"")}
-          <br><span class="muted small">✔ ${esc((e.answer_zh||e.answer_en||"").slice(0,140))}</span>
+          <br><span class="muted small">✔ ${esc((S.lang==="en" ? (e.answer_en||e.answer_zh||"") : (e.answer_zh||e.answer_en||"")).slice(0,140))}</span>
           <br><span class="src">出处：${esc((e.source||[]).join("；"))}</span></li>`;
       }).join("")}</ul></div>`
       : `<div class="card">太棒了，目前没有错题！去 <a href="#quiz">闯关练习</a> 或 <a href="#games">游戏</a> 里检验自己吧。</div>`}
@@ -178,10 +182,34 @@ window.App = (function(){
     if(cw) cw.onclick = ()=>{ S.wrong={}; save(); nav(); };
   }
 
+  function setLang(mode){
+    S.lang = mode; save();
+    document.body.dataset.lang = mode;
+    document.querySelectorAll("#langSwitch button").forEach(function(b){
+      b.classList.toggle("active", b.dataset.lang === mode);
+    });
+    nav();
+  }
+  function applyLangUI(){
+    document.body.dataset.lang = S.lang || "bi";
+    document.querySelectorAll("#langSwitch button").forEach(function(b){
+      b.classList.toggle("active", b.dataset.lang === (S.lang || "bi"));
+    });
+  }
+  function biHTML(en, zh){
+    en = esc(en||""); zh = esc(zh||"");
+    if (S.lang === "en") return en;
+    return en + (zh ? '<div class="qzh muted">' + zh + '</div>' : '');
+  }
+  function enOnly(s){
+    s = String(s||"");
+    const i = s.search(/[\u4e00-\u9fff]/);
+    return (i < 0 ? s : s.slice(0, i)).trim();
+  }
   function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
   function fmtTime(sec){ const m=Math.floor(sec/60), s=sec%60; return `${m}:${String(s).padStart(2,"0")}`; }
 
-  return { $, el, esc, S, save, addXp, level, markSeen, markMaster, recordAnswer,
+  return { $, el, esc, S, save, setLang, applyLangUI, biHTML, enOnly, addXp, level, markSeen, markMaster, recordAnswer,
     items, byId, mcqPool, lessons, lessonByKey, PARTS, lessonStats, overallMastery,
     nav, boot, shuffle, fmtTime, BADGES, CURATED };
 })();
